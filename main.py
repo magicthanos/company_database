@@ -14,21 +14,21 @@ frame2.grid(row=1, column=0)
 sql = None
 
 
-def make_connection():
+def make_connection() -> None:
     global sql
     sql = Connection()
     server_write_button.config(state='active')
     server_close_button.config(state='active')
 
 
-def close_connection():
+def close_connection() -> None:
     global sql
     sql.close()
     server_write_button.config(state='disabled')
     server_close_button.config(state='disabled')
 
 
-def write_person(last_name, first_name, role):
+def write_person(role: str, last_name: str, first_name: str) -> None:
 
     #check if the string is empty
     if last_name.strip() == '':
