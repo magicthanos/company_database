@@ -15,6 +15,3 @@ class Person:
     def __post_init__(self) -> None:
         self.sort_index = self.company_role.value
         self._full_name = f'{self.last_name} {self.first_name}'
-
-    def __repr__(self) -> str:
-        return f'(Full name: {self._full_name}, Role: {self.company_role.name})'

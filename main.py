@@ -4,6 +4,7 @@ from classes.members.person import Person
 from classes.members.roles import Role
 
 root = tk.Tk()
+root.title('Company members')
 
 frame1 = tk.LabelFrame(root)
 frame1.grid(row=0, column=0)
@@ -39,6 +40,7 @@ def write_person(last_name, first_name, role):
 
     global sql
     temp = Person(Role.__dict__[role], last_name, first_name)
+    print(temp)
     sql.write(temp)
 
 
