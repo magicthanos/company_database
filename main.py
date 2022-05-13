@@ -1,7 +1,9 @@
 import tkinter as tk
-from server.sqlconnection import Connection
+from cgitb import enable
+
 from classes.members.person import Person
 from classes.members.roles import Role
+from server.sqlconnection import Connection, ReadWriteDB
 
 root = tk.Tk()
 root.title('Company members')
@@ -11,14 +13,13 @@ frame1.grid(row=0, column=0)
 frame2 = tk.LabelFrame(root)
 frame2.grid(row=1, column=0)
 
-sql = None
-
 
 def make_connection() -> None:
     global sql
     sql = Connection()
     server_write_button.config(state='active')
     server_close_button.config(state='active')
+    server_connect_button.config(state='disabled')
 
 
 def close_connection() -> None:
@@ -26,6 +27,7 @@ def close_connection() -> None:
     sql.close()
     server_write_button.config(state='disabled')
     server_close_button.config(state='disabled')
+    server_connect_button.config(state='active')
 
 
 def write_person(role: str, last_name: str, first_name: str) -> None:
@@ -39,9 +41,10 @@ def write_person(role: str, last_name: str, first_name: str) -> None:
         return
 
     global sql
-    temp = Person(Role.__dict__[role], last_name, first_name)
-    print(temp)
-    sql.write(temp)
+    temp_person = Person(Role.__dict__[role], last_name, first_name)
+    print(temp_person)
+    temp_writer = ReadWriteDB(sql)
+    temp_writer.write(temp_person)
 
 
 last_name_label = tk.Label(frame1, text='Last Name', font=('', 10))
@@ -51,25 +54,29 @@ first_name_entry = tk.Entry(frame1, font=('', 10))
 
 clicked = tk.StringVar()
 clicked.set('Select Role')
-roles_list = {role.name: role.value for role in Role}
+roles_list = {role.name for role in Role}
 
 role_label = tk.Label(frame1, text='Role', font=('', 10))
-role_menu = tk.OptionMenu(frame1, clicked, *roles_list)
+role_menu = tk.OptionMenu(frame1, clicked, *(roles_list))
 
-server_connect_button = tk.Button(frame2,
-                                  text='Connect',
-                                  command=lambda: make_connection(),
-                                  padx=10,
-                                  pady=10)
-
-server_write_button = tk.Button(
+server_connect_button = tk.Button(
     frame2,
-    text='Write',
-    command=lambda: write_person(last_name_entry.get(), first_name_entry.get(),
-                                 clicked.get()),
+    text='Connect',
+    command=lambda: make_connection(),
     padx=10,
     pady=10,
-    state='disabled')
+)
+
+server_write_button = tk.Button(frame2,
+                                text='Write',
+                                command=lambda: write_person(
+                                    clicked.get(),
+                                    last_name_entry.get(),
+                                    first_name_entry.get(),
+                                ),
+                                padx=10,
+                                pady=10,
+                                state='disabled')
 
 server_close_button = tk.Button(frame2,
                                 text='Close',

@@ -1,4 +1,5 @@
 import sqlite3
+
 from classes.members.person import Person
 
 
@@ -10,13 +11,19 @@ class Connection:
         self.db = sqlite3.connect('test.db')
         print('Connection made!')
 
+    def close(self) -> None:
+        self.db.close()
+
+
+class ReadWriteDB:
+
+    def __init__(self, database: Connection) -> None:
+        self.database = database
+
     def write(self, member: Person) -> None:
         '''Writes First Name, Last Name and Role in Workers Table'''
-        cur = self.db.cursor()
+        cur = self.database.db.cursor()
         cur.execute(
             "INSERT INTO Workers VALUES (?, ?, ?)",
             (member.first_name, member.last_name, member.company_role.name))
-        self.db.commit()
-
-    def close(self) -> None:
-        self.db.close()
+        self.database.db.commit()

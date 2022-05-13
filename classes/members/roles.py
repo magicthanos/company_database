@@ -1,6 +1,6 @@
-from enum import Enum
+from enum import Enum, auto
 
 
 class Role(Enum):
-    MANAGER = 1
-    WORKER = 2
+    MANAGER = auto()
+    WORKER = auto()
