@@ -1,6 +1,7 @@
 import sqlite3
 
 from classes.members.person import Person
+from classes.members.roles import Role
 
 
 class Connection:
@@ -23,7 +24,15 @@ class ReadWriteDB:
     def write(self, member: Person) -> None:
         '''Writes First Name, Last Name and Role in Workers Table'''
         cur = self.database.db.cursor()
-        cur.execute(
-            "INSERT INTO Workers VALUES (?, ?, ?)",
-            (member.first_name, member.last_name, member.company_role.name))
+        cur.execute("INSERT INTO Workers VALUES (?, ?, ?, ?)",
+                    (member.first_name, member.last_name,
+                     member.company_role.name, member.years_of_service))
         self.database.db.commit()
+
+    def return_members(self) -> list[Person]:
+        cur = self.database.db.cursor()
+        person_list = [
+            Person(item[0], item[1], Role.__dict__[item[2]], item[3])
+            for item in cur.execute('SELECT * FROM Workers')
+        ]
+        return person_list
