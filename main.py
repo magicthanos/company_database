@@ -70,7 +70,8 @@ def get_company_members() -> list[Person]:
 def display_members(listbox: tk.Listbox):
     listbox.delete(0, 'end')
     for key, item in enumerate(get_company_members()):
-        listbox.insert(key, f'{item._full_name} {item.company_role.name}')
+        listbox.insert(
+            key, f'{item.get_full_name()} {item.get_company_role().name}')
     print(get_company_members())
 
 

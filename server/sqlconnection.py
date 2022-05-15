@@ -24,9 +24,10 @@ class ReadWriteDB:
     def write(self, member: Person) -> None:
         '''Writes First Name, Last Name and Role in Workers Table'''
         cur = self.database.db.cursor()
-        cur.execute("INSERT INTO Workers VALUES (?, ?, ?, ?)",
-                    (member.first_name, member.last_name,
-                     member.company_role.name, member.years_of_service))
+        cur.execute(
+            "INSERT INTO Workers VALUES (?, ?, ?, ?)",
+            (member.get_first_name(), member.get_last_name(),
+             member.get_company_role().name, member.get_years_of_service()))
         self.database.db.commit()
 
     def return_members(self) -> list[Person]:
